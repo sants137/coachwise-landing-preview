@@ -52,26 +52,32 @@ html.js .gira-p.sai { opacity: 0; transform: translateY(-70%); }
 .topo-conta a { color: var(--branco); font-weight: 600; text-underline-offset: 4px; }
 @media (hover: hover) and (pointer: fine) { .topo-conta a:hover { color: var(--brasa-400); } }
 .topo-texto { gap: 28px; }
-.topo-prova { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; align-content: start; }
+.topo-prova { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; margin-top: 36px; align-content: start; } /* COA-M030: as pílulas ficam do tamanho do conteúdo, sem esticar */
 .topo-prova .pilula-lojas { min-height: 42px; }
 
-/* ---------- emblemas das lojas (COA-M028): os arquivos oficiais, sem alteração de cor, proporção nem texto ----------
+/* ---------- emblemas das lojas (COA-M028, COA-M030): os arquivos oficiais, sem alteração de cor, proporção nem texto ----------
    Mesma altura nos dois (as diretrizes pedem tamanhos iguais lado a lado); 40 px é o mínimo da Apple na tela.
    Área livre de pelo menos um quarto da altura em volta (o espaço entre os dois e a margem do grupo).
    O PNG do Google traz 29 px transparentes em cima e embaixo (de 250): o object-fit: cover só corta essa margem transparente,
-   para o desenho ficar com a mesma altura do da Apple; o emblema em si não muda. */
-.lojas { --loja-h: 44px; display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--loja-h) / 4 + 2px); }
-.loja { display: inline-flex; flex: none; line-height: 0; border-radius: 8px; text-decoration: none; }
-.loja img { display: block; height: var(--loja-h); width: auto; max-width: none; }
+   para o desenho ficar com a mesma altura do da Apple; o emblema em si não muda.
+   COA-M030 (pedido do Sants, 01/11/2026): sempre lado a lado, nunca empilhados. Sem quebra de linha; cada emblema parte da
+   largura que tem em --loja-h e encolhe na proporção dessa largura (flex-shrink pesa pela base), então, quando falta espaço,
+   os dois diminuem pelo mesmo fator e continuam com a mesma altura visível. */
+.lojas { --loja-h: 44px; display: flex; flex-wrap: nowrap; align-items: center; gap: calc(var(--loja-h) / 4 + 2px); min-width: 0; max-width: 100%; }
+.loja { display: block; flex: 0 1 auto; min-width: 0; line-height: 0; border-radius: 8px; text-decoration: none; }
+.loja-apple { width: calc(var(--loja-h) * 119.66407 / 40); }
+.loja-google { width: calc(var(--loja-h) * 646 / 192); }
+.loja img { display: block; width: 100%; height: auto; max-width: none; }
+.loja-apple img { aspect-ratio: 119.66407 / 40; }
 .loja-google img { aspect-ratio: 646 / 192; object-fit: cover; object-position: center; }
 .loja:focus-visible { outline: 2px solid var(--foco, var(--brasa-400)); outline-offset: 3px; }
-.topo-lojas { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 6px; }
+.topo-lojas { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 6px; min-width: 0; }
 .topo-lojas .lojas { --loja-h: 40px; }
 .lojas-rotulo { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--cinza-200); }
 .lojas-rotulo .ic { width: 16px; height: 16px; color: var(--brasa-400); }
 .app-cab-lado { display: grid; gap: 24px; justify-items: start; }
 .fecha-lojas { margin-top: 2px; }
-.nav-painel a.loja { display: inline-flex; min-height: 0; padding: 0; border-radius: 8px; }
+.nav-painel a.loja { display: block; min-height: 0; padding: 0; border-radius: 8px; }
 .nav-painel-lojas { --loja-h: 40px; justify-content: center; margin: 16px 0 6px; }
 
 /* ---------- S3b. Como funciona: cartões numerados à esquerda, a tela do passo à direita ---------- */
@@ -295,6 +301,30 @@ html.sem-valores [data-selo-planos] { display: none; }
 /* o anel de foco do botão do plano em destaque (cartão claro): o Brasa 700 dá 5,20:1 contra o Nuvem */
 .plano-destaque { --foco: var(--brasa-700); }
 
+/* ---------- S1 no computador (COA-M029): os cartões de evento saem de cima da janela "Hoje" e do celular ----------
+   Três ficam empilhados no vão à direita do título, acima da janela e do celular (o título termina antes de onde a
+   pilha começa). Dois ficam embaixo da janela, à esquerda do celular.
+   A janela passa de 452 para 504 px: a coluna de ícones da lateral pedia 463 px de corpo e empurrava a fileira de módulos
+   (WhatsApp, Treinos...) para fora da moldura; com 504 ela aparece inteira. O celular (96 + 454 px) continua mais baixo que a janela.
+   Só acima de 1100 px; o tablet e o celular seguem as regras de pagina.css. */
+@media (min-width: 1101px) {
+  .topo-produto { height: 600px; }
+  .topo-produto .moldura-hero { height: 504px; }
+  .ev { padding: 9px 15px 9px 9px; gap: 11px; }
+  .ev-ico { width: 32px; height: 32px; }
+  /* a pilha de cima: a mais nova (perto da janela) embaixo; as três alinhadas pela direita, em degraus */
+  .ev1 { top: auto; bottom: calc(100% + 160px); left: auto; right: 72px; rotate: -2deg; }
+  .ev2 { top: auto; bottom: calc(100% + 88px); left: auto; right: 0; rotate: 1.5deg; }
+  .ev5 { top: auto; bottom: calc(100% + 16px); left: auto; right: 40px; rotate: -1.5deg; }
+  /* embaixo da janela, à esquerda do celular */
+  .ev3 { top: calc(504px + 18px); bottom: auto; left: 10px; right: auto; rotate: 1.5deg; }
+  .ev4 { top: calc(504px + 32px); bottom: auto; left: auto; right: calc(232px + 18px); rotate: -2deg; } /* 18 px antes do celular (232 px) */
+}
+/* abaixo de 1366 px o celular encobria o fim de "3 alunos sem mensagem há mais de 5 dias": a linha quebra antes dele (cabe nos 58 px da linha) */
+@media (min-width: 1101px) and (max-width: 1365px) {
+  .topo-produto .hoje-lista li { padding-right: 124px; line-height: 1.25; text-wrap: balance; }
+}
+
 /* ---------- tablet ---------- */
 @media (max-width: 1100px) {
   .nav-entrar { margin-left: auto; }
@@ -324,6 +354,7 @@ html.sem-valores [data-selo-planos] { display: none; }
   .nav-painel .botao { min-height: 52px; }
 
   .topo { padding-top: 96px; }
+  .topo-grade { column-gap: 0; } /* COA-M030: tudo ocupa a coluna inteira; os 11 vãos de 32 px empurravam a primeira tela para 352 px em 320 */
   .topo-cab { gap: 18px; }
   .h1-l1 { font-size: 22px; line-height: 1.18; }
   .h1-l2 { font-size: 35px; min-height: 2.04em; } /* COA-M028: era 46 px */
@@ -335,7 +366,7 @@ html.sem-valores [data-selo-planos] { display: none; }
   .h1-gira[data-versao="v3"] .h1-l2 { min-height: 1.1em; }
   .topo-conta { font-size: 15px; }
   .topo-prova { order: 4; gap: 8px; margin-top: 36px; }
-  .topo-prova .pilula-lojas { font-size: 14px; }
+  .topo-prova .pilula-lojas { font-size: 14px; padding-right: 14px; } /* COA-M030: em 320 px a pílula do QR code passava 0,3 px e quebrava em duas linhas */
 
   .como-cab { margin-bottom: 28px; }
   .como-bt { grid-template-columns: 38px minmax(0, 1fr); gap: 14px; padding: 16px 16px 16px 14px; border-radius: 18px; }

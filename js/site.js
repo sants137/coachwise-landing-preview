@@ -1,8 +1,8 @@
 // CoachWise, landing page (v6, COA-M025): página de produto à venda, com o texto do 18. Base: a v5 (COA-M022), telas refeitas a partir do código do produto (só leitura).
 // Sem biblioteca; só transform, opacity e clip-path. Tudo respeita prefers-reduced-motion; sem JS, cada demo mostra o estado final.
 // Os botões "Entrar" e "Testar 7 dias grátis" são links normais: a página não cria conta nem envia dado.
-import { CONFIG, EM_BREVE, precos, reais } from './config.js?v=20261101-110121';
-import { registrar } from './eventos.js?v=20261101-110121';
+import { CONFIG, EM_BREVE, precos, reais } from './config.js?v=20261101-112025';
+import { registrar } from './eventos.js?v=20261101-112025';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -130,7 +130,8 @@ function iniciarBarra() {
 }
 
 /* ---------- S1. o título com a palavra que gira (18, S1; mecânica do 17 §1.6) ---------- */
-// Duas camadas: a linha de cima menor, a de baixo grande; uma palavra troca (2,6 s por palavra, deslize de 0,3 s) e para depois de dois ciclos.
+// Duas camadas: a linha de cima menor, a de baixo grande; uma palavra troca (2,6 s por palavra, deslize de 0,3 s) em loop infinito (COA-M029),
+// com pausa no ponteiro, no foco de teclado e com a aba em segundo plano.
 // O h1 traz a frase inteira com a primeira palavra (é o que o leitor de tela e a busca leem); as outras palavras ficam aria-hidden.
 // Sem movimento, a palavra fica na primeira. A V6 (COA-M026, decisão do Sants em 31/10) está no HTML; V1 a V5 entram por ?titulo=v1 ... ?titulo=v5.
 const TITULOS = {
@@ -141,7 +142,7 @@ const TITULOS = {
   v4: { l1: ['Você atende no WhatsApp.'], l2: ['A gestão', 'vem junto.'], gira: 'l2', palavras: ['do treino', 'dos check-ins', 'da evolução', 'das renovações'],
         fecho: 'Cada aluno com a conversa e a gestão na mesma ficha.' },
   v5: { l1: ['A plataforma para'], l2: ['sua consultoria online.'], gira: 'l1', palavras: ['organizar', 'acompanhar', 'automatizar'] },
-  v6: { l1: ['A melhor forma de'], l2: ['Consultoria Online'], gira: 'l1', palavras: ['organizar', 'atender', 'acompanhar', 'automatizar'] },
+  v6: { l1: ['A melhor forma de'], l2: ['Consultoria Online'], gira: 'l1', palavras: ['organizar', 'atender', 'acompanhar', 'automatizar', 'escalar'] },
 };
 function iniciarTitulo() {
   const v = CONFIG.header.versaoPadrao;
@@ -176,7 +177,9 @@ function iniciarTitulo() {
   const itens = [...caixa.children];
   raiz.style.setProperty('--deslize', CONFIG.header.deslizeS * 1000 + 'ms');
   let i = 0, trocas = 0, relogio = null;
-  const total = CONFIG.header.pararAposCiclos > 0 ? itens.length * CONFIG.header.pararAposCiclos : Infinity;
+  // COA-M029: loop infinito por padrão (pararAposCiclos = 0); um número maior que zero ainda para depois de tantos ciclos
+  const ciclos = Number(CONFIG.header.pararAposCiclos);
+  const total = Number.isFinite(ciclos) && ciclos > 0 ? itens.length * ciclos : Infinity;
   // V4: a palavra gira no meio da linha; a caixa acompanha a largura da palavra (sem buraco antes de "vem junto.")
   const meio = t.gira === 'l2' && Boolean(t.l2[1]);
   if (meio) { caixa.classList.add('gira-meio'); caixa.style.width = itens[0].getBoundingClientRect().width + 'px'; }
@@ -194,14 +197,31 @@ function iniciarTitulo() {
     if (reduz() || relogio || trocas >= total) return;
     relogio = setInterval(trocar, CONFIG.header.cadenciaS * 1000);
   }
+  // COA-M029 (WCAG 2.2.2): o loop pausa com o ponteiro sobre o título, com o foco de teclado na primeira tela e com a aba
+  // em segundo plano; só gira com a primeira tela à vista. Um relógio só: avaliar() liga ou desliga o mesmo setInterval.
+  const topo = h.closest('section') ?? h;
+  const motivos = { visivel: false, ponteiro: false, foco: false };
+  function avaliar() {
+    const pode = motivos.visivel && !motivos.ponteiro && !motivos.foco && !document.hidden && !reduz();
+    if (pode) comecar(); else parar();
+  }
+  h.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') { motivos.ponteiro = true; avaliar(); } });
+  h.addEventListener('pointerleave', () => { motivos.ponteiro = false; avaliar(); });
+  topo.addEventListener('focusin', (e) => { motivos.foco = e.target.matches(':focus-visible'); avaliar(); });
+  topo.addEventListener('focusout', (e) => { if (!topo.contains(e.relatedTarget)) { motivos.foco = false; avaliar(); } });
+  document.addEventListener('visibilitychange', avaliar);
   // espera o título entrar (a animação de entrada do h1 leva ~1 s) e só gira com a primeira tela à vista
-  const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) comecar(); else parar(); }, { threshold: 0.2 });
+  const obs = new IntersectionObserver(([e]) => { motivos.visivel = e.isIntersecting; avaliar(); }, { threshold: 0.2 });
   setTimeout(() => obs.observe(h), 900);
   mqReduz.addEventListener('change', () => {
-    if (!reduz()) return;
-    parar(); itens.forEach((x, n) => { x.classList.toggle('on', n === 0); x.classList.remove('sai'); }); i = 0;
-    if (meio) caixa.style.width = itens[0].getBoundingClientRect().width + 'px';
+    if (reduz()) {
+      parar(); itens.forEach((x, n) => { x.classList.toggle('on', n === 0); x.classList.remove('sai'); }); i = 0;
+      if (meio) caixa.style.width = itens[0].getBoundingClientRect().width + 'px';
+    }
+    avaliar();
   });
+  // para conferir no navegador (só leitura): a palavra atual e se o relógio está ligado
+  h.__gira = () => ({ palavra: itens[i].textContent || itens[i].dataset.p, girando: relogio !== null, motivos: { ...motivos, oculta: document.hidden } });
 }
 
 /* ---------- barra no pé do celular: aparece depois da primeira tela e some quando o fecho entra ---------- */

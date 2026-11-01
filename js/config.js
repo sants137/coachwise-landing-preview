@@ -4,10 +4,10 @@
 const padrao = {
   // Header (S1). A versão padrão vai no HTML; as outras entram por parâmetro (?titulo=v1 ... ?titulo=v6; ?h=v1 também vale).
   header: {
-    versaoPadrao: 'v6',          // v1 | v2 | v3 | v4 | v5 | v6. V6 = "A melhor forma de [organizar / atender / acompanhar / automatizar] Consultoria Online" (decisão do Sants, 31/10/2026, COA-M026)
+    versaoPadrao: 'v6',          // v1 | v2 | v3 | v4 | v5 | v6. V6 = "A melhor forma de [organizar / atender / acompanhar / automatizar / escalar] Consultoria Online" (decisão do Sants, 31/10/2026, COA-M026; "escalar" em 01/11/2026, COA-M029)
     cadenciaS: 2.6,              // segundos por palavra (estimado, do 17)
     deslizeS: 0.3,
-    pararAposCiclos: 2,          // estimado, do 17; 0 = não para
+    pararAposCiclos: 0,          // 0 = loop infinito (pedido do Sants, 01/11/2026, COA-M029; era 2, do 17). Pausa no ponteiro, no foco e com a aba oculta
   },
 
   // Planos (S12b). PROVISÓRIO 19: inventado por pedido do Sants, 31/10/2026. Sem origem de mercado nem de custo.
