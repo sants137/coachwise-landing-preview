@@ -9,26 +9,28 @@ html:not(.sem-teste) [data-so-sem-teste] { display: none; }
 html.sem-teste [data-so-teste] { display: none !important; }
 html:not(.plano-base) [data-so-plano-base] { display: none; }
 
-/* ---------- S0. a barra, maior (17 §5.2: logo de 40 px, pílula de 76 px, links em 16 px, botões de 48 px) ---------- */
-html { scroll-padding-top: 112px; }
-.nav { top: 16px; }
-.nav-pilula { height: 76px; gap: 20px; padding: 0 14px 0 28px; }
-.nav-logo img { width: auto; height: 40px; }
-.nav-links a { height: 44px; padding: 0 14px; font-size: 16px; }
-.nav-indicador { height: 44px; }
-.nav-entrar { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 999px; font-size: 16px; font-weight: 600; color: var(--nuvem); text-decoration: none; border: 1.5px solid rgba(255, 255, 255, .24); transition: background-color 180ms ease, border-color 180ms ease; }
+/* ---------- S0. a barra (COA-M028, pedido do Sants: "um pouco grande"): pílula de 64 px (era 76), logo de 33 px (era 40),
+   links em 15 px, Entrar e Testar com 42 px; o texto do botão laranja segue em 700 e 19 px (COA-M027) ---------- */
+html { scroll-padding-top: 100px; }
+.nav { top: 14px; }
+.nav-pilula { height: 64px; gap: 18px; padding: 0 11px 0 24px; }
+.nav-logo img { width: auto; height: 33px; }
+.nav-links a { height: 40px; padding: 0 13px; font-size: 15px; }
+.nav-indicador { height: 40px; }
+.nav-entrar { display: inline-flex; align-items: center; min-height: 42px; padding: 0 18px; border-radius: 999px; font-size: 15px; font-weight: 600; color: var(--nuvem); text-decoration: none; border: 1.5px solid rgba(255, 255, 255, .24); transition: background-color 180ms ease, border-color 180ms ease; }
 @media (hover: hover) and (pointer: fine) { .nav-entrar:hover { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .4); } }
-.nav-acao { min-height: 48px; padding: 0 24px; font-size: 16px; }
+.nav-acao { min-height: 42px; padding: 0 20px; }
 .nav-painel-entrar { color: var(--nuvem); }
 
 .botao.vazado { box-shadow: none; border: 1.5px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .04); } /* taste-skill-ignore: tira a sombra interna do botão vazado da v4 (box-shadow: none) */
 
 /* ---------- S1. o título que gira (duas camadas) ---------- */
-.topo { padding-top: clamp(132px, 10.4vw, 152px); }
+.topo { padding-top: clamp(120px, 9.6vw, 140px); }
 .h1-gira { max-width: none; display: grid; gap: .1em; text-wrap: wrap; }
 .h1-l1, .h1-l2 { display: block; }
 .h1-l1 { font-size: clamp(30px, 3.5vw, 52px); line-height: 1.08; letter-spacing: -0.03em; color: var(--cinza-200); font-weight: 700; }
-.h1-l2 { font-size: clamp(56px, 7.2vw, 108px); line-height: .98; letter-spacing: -0.045em; font-stretch: 125%; }
+.h1-l2 { font-size: clamp(42px, 5.4vw, 81px); line-height: .98; /* COA-M028: um quarto menor (era clamp(56px, 7.2vw, 108px)) */ letter-spacing: -0.045em; font-stretch: 125%; }
+.h1-gira[data-versao="v1"] .h1-l2 { font-size: clamp(56px, 7.2vw, 108px); } /* a V1 ("seus alunos.") fica como estava */
 .h1-gira[data-versao="v4"] .h1-l2 { font-size: clamp(32px, 3.9vw, 56px); line-height: 1.04; }
 .h1-gira[data-versao="v5"] .h1-l2 { font-size: clamp(40px, 5.6vw, 84px); }
 .h1-gira[data-versao="v2"] .h1-l2 { font-size: clamp(48px, 6.4vw, 96px); }
@@ -52,6 +54,25 @@ html.js .gira-p.sai { opacity: 0; transform: translateY(-70%); }
 .topo-texto { gap: 28px; }
 .topo-prova { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; align-content: start; }
 .topo-prova .pilula-lojas { min-height: 42px; }
+
+/* ---------- emblemas das lojas (COA-M028): os arquivos oficiais, sem alteração de cor, proporção nem texto ----------
+   Mesma altura nos dois (as diretrizes pedem tamanhos iguais lado a lado); 40 px é o mínimo da Apple na tela.
+   Área livre de pelo menos um quarto da altura em volta (o espaço entre os dois e a margem do grupo).
+   O PNG do Google traz 29 px transparentes em cima e embaixo (de 250): o object-fit: cover só corta essa margem transparente,
+   para o desenho ficar com a mesma altura do da Apple; o emblema em si não muda. */
+.lojas { --loja-h: 44px; display: flex; flex-wrap: wrap; align-items: center; gap: calc(var(--loja-h) / 4 + 2px); }
+.loja { display: inline-flex; flex: none; line-height: 0; border-radius: 8px; text-decoration: none; }
+.loja img { display: block; height: var(--loja-h); width: auto; max-width: none; }
+.loja-google img { aspect-ratio: 646 / 192; object-fit: cover; object-position: center; }
+.loja:focus-visible { outline: 2px solid var(--foco, var(--brasa-400)); outline-offset: 3px; }
+.topo-lojas { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 6px; }
+.topo-lojas .lojas { --loja-h: 40px; }
+.lojas-rotulo { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--cinza-200); }
+.lojas-rotulo .ic { width: 16px; height: 16px; color: var(--brasa-400); }
+.app-cab-lado { display: grid; gap: 24px; justify-items: start; }
+.fecha-lojas { margin-top: 2px; }
+.nav-painel a.loja { display: inline-flex; min-height: 0; padding: 0; border-radius: 8px; }
+.nav-painel-lojas { --loja-h: 40px; justify-content: center; margin: 16px 0 6px; }
 
 /* ---------- S3b. Como funciona: cartões numerados à esquerda, a tela do passo à direita ---------- */
 .como { background: var(--onix); }
@@ -256,8 +277,10 @@ html.sem-valores [data-selo-planos] { display: none; }
 .rodape-col a { padding: 6px 0; font-size: 17px; color: var(--nuvem); text-decoration: none; transition: color 180ms ease; }
 @media (hover: hover) and (pointer: fine) { .rodape-col a:hover { color: var(--brasa-400); } }
 .rodape-col .rodape-testar { color: var(--brasa-400); font-weight: 600; }
-.rodape-marca { margin-top: clamp(56px, 6vw, 96px); opacity: .9; }
-.rodape-baixo { margin-top: 28px; font-size: 14px; color: var(--cinza-400); }
+/* COA-M028: sem o logo grande no fim; embaixo, o ano e a nota das marcas das lojas */
+.rodape-lojas { margin-top: 4px; }
+.rodape-baixo { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 32px; margin-top: clamp(48px, 5vw, 72px); padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, .08); font-size: 14px; color: var(--cinza-400); }
+.rodape-marcas { max-width: 72ch; font-size: 13px; line-height: 1.5; color: var(--cinza-400); text-wrap: pretty; }
 
 /* ---------- botões cheios Brasa da página: texto e seta brancos (COA-M027, decisão do Sants, 31/10/2026) ----------
    Branco sobre Brasa dá 3,12:1, que só passa no WCAG AA como texto grande: peso 700 e pelo menos 18,7 px (aqui 19 e 20 px).
@@ -275,7 +298,7 @@ html.sem-valores [data-selo-planos] { display: none; }
 /* ---------- tablet ---------- */
 @media (max-width: 1100px) {
   .nav-entrar { margin-left: auto; }
-  .nav-menu { width: 48px; height: 48px; padding: 0; justify-content: center; }
+  .nav-menu { width: 44px; height: 44px; padding: 0; justify-content: center; }
   .nav-menu-txt { display: none; }
   .duvidas-titulo { position: static; }
   #planos .cab-lado > :first-child, #planos .cab-lado > :last-child { grid-column: 1 / -1; }
@@ -291,20 +314,20 @@ html.sem-valores [data-selo-planos] { display: none; }
 
 /* ---------- celular ---------- */
 @media (max-width: 760px) {
-  html { scroll-padding-top: 92px; }
+  html { scroll-padding-top: 84px; }
   .nav { top: 10px; }
-  .nav-pilula { height: 64px; gap: 6px; padding: 0 8px 0 18px; }
-  .nav-logo img { height: 26px; }
+  .nav-pilula { height: 56px; gap: 6px; padding: 0 6px 0 16px; }
+  .nav-logo img { height: 24px; }
   .nav-entrar { min-height: 44px; padding: 0 12px; border-color: transparent; font-size: 15.5px; }
   .nav-menu { margin-left: 0; height: 44px; width: 44px; padding: 0; justify-content: center; }
   .nav-menu-txt { display: none; }
   .nav-painel .botao { min-height: 52px; }
 
-  .topo { padding-top: 104px; }
+  .topo { padding-top: 96px; }
   .topo-cab { gap: 18px; }
   .h1-l1 { font-size: 22px; line-height: 1.18; }
-  .h1-l2 { font-size: 46px; min-height: 2.04em; }
-  .h1-gira[data-versao="v1"] .h1-l2 { min-height: 0; }
+  .h1-l2 { font-size: 35px; min-height: 2.04em; } /* COA-M028: era 46 px */
+  .h1-gira[data-versao="v1"] .h1-l2 { min-height: 0; font-size: 46px; }
   .h1-gira[data-versao="v4"] .h1-l2 { font-size: 24px; min-height: 2.1em; }
   .h1-gira[data-versao="v5"] .h1-l2 { font-size: 34px; }
   .h1-gira[data-versao="v2"] .h1-l2 { font-size: 30px; min-height: 0; }
@@ -374,6 +397,7 @@ html.sem-valores [data-selo-planos] { display: none; }
   .fecha-botoes .botao { width: 100%; }
   .fecha-cartao .fecha-pilha { height: 270px; }
   .rodape-grade { grid-template-columns: 1fr 1fr; gap: 32px 20px; }
+  .rodape-logo img { height: 26px; }
 }
 
 /* ---------- menos movimento ---------- */
