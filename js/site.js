@@ -1,8 +1,8 @@
 // CoachWise, landing page (v6, COA-M025): página de produto à venda, com o texto do 18. Base: a v5 (COA-M022), telas refeitas a partir do código do produto (só leitura).
 // Sem biblioteca; só transform, opacity e clip-path. Tudo respeita prefers-reduced-motion; sem JS, cada demo mostra o estado final.
 // Os botões "Entrar" e "Testar 7 dias grátis" são links normais: a página não cria conta nem envia dado.
-import { CONFIG, EM_BREVE, precos, reais } from './config.js';
-import { registrar } from './eventos.js';
+import { CONFIG, EM_BREVE, precos, reais } from './config.js?v=20261101-110121';
+import { registrar } from './eventos.js?v=20261101-110121';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];

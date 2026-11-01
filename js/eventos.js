@@ -1,6 +1,6 @@
 // Registro de eventos: um stub. Guarda em window.cwEventos e avisa por um CustomEvent 'cw:evento'.
 // Não envia para serviço nenhum enquanto CONFIG.destinoDosEventos for null.
-import { CONFIG } from './config.js';
+import { CONFIG } from './config.js?v=20261101-110121';
 
 export function registrar(nome, dados = {}) {
   const evento = { nome, dados, em: new Date().toISOString() };
